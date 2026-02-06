@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Websocket Demo</h1>
+    <input type="text" class="inputMessage" placeholder="Type a message">
+    <button class="sendMessage" onclick="serverConnect()">Send</button>
+    <div class="output" ></div>
+    <script>
+        //connect to the local server
+        const socket= new WebSocket("ws://localhost:8080")
+
+        //Connection open
+        socket.addEventListener("open", ()=>{
+            console.log("Connected to the server")
+        })
+
+        // Listen for messages from the server
+        socket.addEventListener("message",(event)=>{
+            console.log(`Received message ${event}`)
+            output=document.querySelector(".output")
+            output.innerHTML+=`<p><strong>Server:</strong> ${event.data}</p>`;
+        })
+
+        function serverConnect(){
+            const input=document.querySelector("input")
+            socket.send(input.value)
+            input.value=''
+        }
+    </script>
+</body>
+</html>
