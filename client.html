@@ -8,26 +8,31 @@
 <body>
     <h1>Websocket Demo</h1>
     <input type="text" class="inputMessage" placeholder="Type a message">
-    <button class="sendMessage" onclick="serverConnect()">Send</button>
+    <button class="sendMessage" onclick="sendMsgServer()">Send</button>
     <div class="output" ></div>
     <script>
         //connect to the local server
         const socket= new WebSocket("ws://localhost:8080")
+        const input=document.querySelector(".inputMessage")
+        const output=document.querySelector(".output")
 
         //Connection open
         socket.addEventListener("open", ()=>{
             console.log("Connected to the server")
         })
 
-        // Listen for messages from the server
+        // Listen for messages from the server Automatically because of tunnel
         socket.addEventListener("message",(event)=>{
-            console.log(`Received message ${event}`)
-            output=document.querySelector(".output")
+            console.log(`Received message ${event.data}`)
+           
             output.innerHTML+=`<p><strong>Server:</strong> ${event.data}</p>`;
         })
+        
+        socket.addEventListener("close",(event)=>{
+            console.log( "closing", event.message)
+        })
 
-        function serverConnect(){
-            const input=document.querySelector("input")
+        function sendMsgServer(){   
             socket.send(input.value)
             input.value=''
         }
